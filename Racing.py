@@ -27,6 +27,10 @@ CHANCE_CONES = 1
 CHANCE_OIL = 1
 CHANCE_ROCKS = 1
 
+# running variable and game over text 
+running = True
+gameover = ""
+
 # draws the current frame 
 def draw():
     screen.blit('road',(0,0))
@@ -40,14 +44,19 @@ def draw():
         r.draw()
     setupBarriers()
     car.draw()
+    screen.draw.text(gameover, (WIDTH/2 - 100, HEIGHT/2), color="white", fontsize=50)
 
 # updates inbetween frames 
 def update():
-    car.y += 1
-    checkKeyboard()
-    createAndUpdateCones()
-    createAndUpdateOil()
-    createAndUpdateRocks()
+    global gameover
+    if (running):    
+        car.y += 1
+        checkKeyboard()
+        createAndUpdateCones()
+        createAndUpdateOil()
+        createAndUpdateRocks()
+    else:
+        gameover = "Game over!"
        
 # checks keyboard input 
 def checkKeyboard():
@@ -107,6 +116,7 @@ def spin():
     
 # create and update rocks
 def createAndUpdateRocks():
+    global running
     # create new rock 
     if(random.randint(0, 100) < CHANCE_ROCKS): # using a 1% chance
         x = random.randint(0, 400)
@@ -116,5 +126,5 @@ def createAndUpdateRocks():
         r.y += SPEED_ROCKS
         # check for collision of the car and rocks
         if(car.colliderect(r)):
-            # stop game ...
-            pass
+            # stop game
+            running = False
