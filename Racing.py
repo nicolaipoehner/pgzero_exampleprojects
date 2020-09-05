@@ -27,9 +27,10 @@ CHANCE_CONES = 1
 CHANCE_OIL = 1
 CHANCE_ROCKS = 1
 
-# running variable and game over text 
+# running variable and game over and countdown text
 running = True
 gameover = ""
+countdown = 60.0
 
 # draws the current frame 
 def draw():
@@ -44,11 +45,11 @@ def draw():
         r.draw()
     setupBarriers()
     car.draw()
-    screen.draw.text(gameover, (WIDTH/2 - 100, HEIGHT/2), color="white", fontsize=50)
+    screen.draw.text(gameover, (WIDTH/2 - 150, HEIGHT/2), color="white", fontsize=50, align="center")
+    screen.draw.text(str(countdown), (WIDTH/2 - 50, 25), color="white", fontsize=50, align="center")
 
 # updates inbetween frames 
 def update():
-    global gameover
     if (running):    
         car.y += 1
         checkKeyboard()
@@ -56,7 +57,7 @@ def update():
         createAndUpdateOil()
         createAndUpdateRocks()
     else:
-        gameover = "Game over!"
+        clock.unschedule(resetCountdown)
        
 # checks keyboard input 
 def checkKeyboard():
@@ -116,7 +117,7 @@ def spin():
     
 # create and update rocks
 def createAndUpdateRocks():
-    global running
+    global running, gameover
     # create new rock 
     if(random.randint(0, 100) < CHANCE_ROCKS): # using a 1% chance
         x = random.randint(0, 400)
@@ -127,4 +128,18 @@ def createAndUpdateRocks():
         # check for collision of the car and rocks
         if(car.colliderect(r)):
             # stop game
+            gameover = "Game over! \n You hit a rock!"
             running = False
+            
+# reset the countdown text on the display each second
+def resetCountdown():
+    global countdown, gameover, running
+    if(countdown > 0.0):
+        countdown -= 1.0
+    else:
+        countdown = 0.0
+        gameover = "Game over! \n You won!"
+        running = False
+
+# use the pgzero clock to call the resetCountdown() regulary each second 
+clock.schedule_interval(resetCountdown, 1.0)
