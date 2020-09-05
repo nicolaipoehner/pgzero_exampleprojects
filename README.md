@@ -1,4 +1,4 @@
-# pygamezero_examplesprojects
+# pygamezero_exampleprojects
 A selection of example projects for Pygame Zero
 
 ## Racing 
